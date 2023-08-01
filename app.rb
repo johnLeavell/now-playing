@@ -29,6 +29,6 @@ end
 
 get("/movies") do
   @movies_nearby = get_movies_nearby()
-
+  
   erb :movies
 end

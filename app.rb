@@ -3,9 +3,11 @@ require 'sinatra/reloader'
 require 'json'
 require 'net/http'
 require 'uri'
-require 'dotenv/load' # This loads the environment variables from .env
+require 'geocoder'
+require 'dotenv/load'
 
-def get_movies_nearby()
+
+def get_movies()
   tmdb_api_key = ENV['TMDB_API_KEY']
 
   url = URI("https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1")
@@ -26,13 +28,16 @@ def get_movies_nearby()
   end
 end
 
+
+
+
 get '/' do
 
   erb :index
 end
 
 get '/movies' do
-  @movies_nearby = get_movies_nearby()
+  @movies_nearby = get_movies()
 
   erb :movies
 end

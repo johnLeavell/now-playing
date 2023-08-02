@@ -1,0 +1,14 @@
+<h2>Movie Description</h2>
+<a href="/">Go back</a>
+
+<div class="card" style="width: 18rem;">
+  <% if @movie['poster_path'] %>
+    <img src="https://image.tmdb.org/t/p/w200<%= @movie['poster_path'] %>" class="card-img-top" alt="<%= @movie['title'] %> Poster">
+  <% else %>
+    <img src="https://example.com/placeholder-image.jpg" class="card-img-top" alt="No Poster Available">
+  <% end %>
+  <div class="card-body">
+    <h5 class="card-title"><%= @movie['title'] %> (Release Date: <%= @movie['release_date'] %>)</h5>
+    <p class="card-text"><%= @movie['overview'] %></p>
+  </div>
+</div>

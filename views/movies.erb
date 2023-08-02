@@ -1,7 +1,7 @@
 <h2>Movies Playing Nearby:</h2>
-<a href="/">Go back</a>
+<a class="btn btn-primary" href="/">Go back</a>
 
-<div class="row">
+<div class="row justify-content-center"> 
   <% @movies_nearby.each do |movie| %>
     <div class="col-md-6 col-lg-4 mb-4">
       <div class="card" style="width: 18rem;">
@@ -13,7 +13,9 @@
         <div class="card-body">
           <h5 class="card-title"><%= movie['title'] %></h5>
           <h6>(Release Date: <%= movie['release_date'] %>)</h6>
-          <p class="card-text">Movie Description: <%= movie['overview'] %></p>
+          <p class="card-text">
+            <a href='/movie_info/<%= movie['id'] %>'>Movie Description:</a>
+          </p>
           <a href="/local_movies">Check nearby playing times:</a>
         </div>
       </div>

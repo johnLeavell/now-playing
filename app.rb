@@ -41,3 +41,28 @@ get '/movies' do
 
   erb :movies
 end
+
+
+get '/movie_info/:movie_id' do
+  tmdb_api_key = ENV['TMDB_API_KEY']
+  movie_id = params[:movie_id]
+
+  url = URI("https://api.themoviedb.org/3/movie/#{movie_id}?language=en-US")
+
+  http = Net::HTTP.new(url.host, url.port)
+  http.use_ssl = true
+
+  request = Net::HTTP::Get.new(url)
+  request['accept'] = 'application/json'
+  request['Authorization'] = "Bearer #{tmdb_api_key}"
+
+  response = http.request(request)
+
+  if response.code == '200'
+    @movie = JSON.parse(response.body)
+    erb :movie_info
+  else
+    erb :error_page
+  end
+end
+

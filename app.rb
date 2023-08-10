@@ -1,64 +1,36 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
-require 'net/http'
-require 'uri'
+require 'http'
 require 'geocoder'
 require 'dotenv/load'
 
 
-def get_movies()
+def get_movies
   tmdb_api_key = ENV['TMDB_API_KEY']
+  url = "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1"
+  headers = { 'accept' => 'application/json', 'Authorization' => "Bearer #{tmdb_api_key}" }
 
-  url = URI("https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1")
-
-  http = Net::HTTP.new(url.host, url.port)
-  http.use_ssl = true
-
-  request = Net::HTTP::Get.new(url)
-  request['accept'] = 'application/json'
-  request['Authorization'] = "Bearer #{tmdb_api_key}"
-
-  response = http.request(request)
-
-  if response.code == '200'
-    return JSON.parse(response.body)['results']
-  else
-    return []
-  end
+  response = HTTP.get(url, headers: headers)
+  response.code == 200 ? JSON.parse(response.body)['results'] : []
 end
 
-
-
-
 get '/' do
-
   erb :index
 end
 
 get '/movies' do
-  @movies_nearby = get_movies()
-
+  @movies_nearby = get_movies
   erb :movies
 end
 
-
-get '/movie_info/:movie_id' do
+def fetch_movie_info(movie_id)
   tmdb_api_key = ENV['TMDB_API_KEY']
-  movie_id = params[:movie_id]
+  url = "https://api.themoviedb.org/3/movie/#{movie_id}?language=en-US"
+  headers = { 'accept' => 'application/json', 'Authorization' => "Bearer #{tmdb_api_key}" }
 
-  url = URI("https://api.themoviedb.org/3/movie/#{movie_id}?language=en-US")
-
-  http = Net::HTTP.new(url.host, url.port)
-  http.use_ssl = true
-
-  request = Net::HTTP::Get.new(url)
-  request['accept'] = 'application/json'
-  request['Authorization'] = "Bearer #{tmdb_api_key}"
-
-  response = http.request(request)
-
-  if response.code == '200'
+  response = HTTP.get(url, headers: headers)
+  if response.code == 200
     @movie = JSON.parse(response.body)
     erb :movie_info
   else
@@ -66,3 +38,6 @@ get '/movie_info/:movie_id' do
   end
 end
 
+get '/movie_info/:movie_id' do
+  fetch_movie_info(params[:movie_id])
+end
